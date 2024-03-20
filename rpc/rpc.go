@@ -42,3 +42,29 @@ func DecodeMessage(msg []byte) (string, []byte, error) {
 
 	return baseMessage.Method, content[:contentLength], nil
 }
+
+// type SplitFunc func(data []byte, atEOF bool) (advance int, token []byte, err error)
+
+func Split(data []byte, _ bool) (advance int, token []byte, err error) {
+	header, content, found := bytes.Cut(data, []byte{'\r', '\n', '\r', '\n'})
+	if !found {
+		return 0, nil, nil
+	}
+	// header is "Content-Length: <number>", we want to get the
+	// number of bytes
+	contentLengthBytes := header[len("Content-Length: "):]
+	// and then turn it into an int
+	contentLength, err := strconv.Atoi(string(contentLengthBytes))
+	if err != nil {
+		return 0, nil, err
+	}
+
+	// we haven't read enough bytes from the incoming stream yet
+	// so there's no error, we just wait
+	if len(content) < contentLength {
+		return 0, nil, nil
+	}
+
+	totalLength := len(header) + 4 + contentLength
+	return totalLength, data[:totalLength], nil
+}
