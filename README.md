@@ -2,7 +2,7 @@
 
 A Language Server built for learning purposes.
 
-It doesn't do anything special for any particular language, it's attached to markdown files and handles hover (shift + j on Neovim), go to definition (gd on Neovim) and has a few code actions (replace VS Code with Neovim and replace VS Code with VS C*de). It is focused on helping me understand what tools **do** and **how** they work.
+It doesn't do anything special for any particular language, it's attached to markdown files and handles hover (shift + j on Neovim), go to definition (gd on Neovim), has a few code actions (replace VS Code with Neovim and replace VS Code with VS C*de) and completion (for the word 'Neovim'). It is focused on helping me understand what tools **do** and **how** they work.
 Built and tested with Neovim.
 
 ## Usage
