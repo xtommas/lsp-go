@@ -91,6 +91,19 @@ func handleMessage(logger *log.Logger, writer io.Writer, state analysis.State, m
 
 		// Write the response back
 		writeResponse(writer, response)
+
+	case "textDocument/definition":
+		var request lsp.DefinitionRequest
+		if err := json.Unmarshal(contents, &request); err != nil {
+			logger.Printf("textDocument/definition: %s", err)
+			return
+		}
+
+		// Create a response
+		response := state.Definition(request.ID, request.Params.TextDocument.URI, request.Params.Position)
+
+		// Write the response back
+		writeResponse(writer, response)
 	}
 }
 
