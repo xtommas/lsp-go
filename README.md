@@ -8,7 +8,7 @@ Built and tested with Neovim.
 
 ## Usage
 
-In order to actually *use* the LSP inside Neovim, you should run `go build main.go` and add this to your config:
+In order to actually *use* the LSP inside Neovim, you should change the path of `logger` on main.go, run `go build main.go` and add this to your config:
 
 ```lua
 local client = vim.lsp.start_client {
