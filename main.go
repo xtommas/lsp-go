@@ -64,7 +64,17 @@ func handleMessage(logger *log.Logger, writer io.Writer, state analysis.State, m
 
 		// Sync the state of the 'analysis engine' with the state of the editor
 		// (mapping the file to the contents)
-		state.OpenDocument(request.Params.TextDocument.URI, request.Params.TextDocument.Text)
+		diagnostics := state.OpenDocument(request.Params.TextDocument.URI, request.Params.TextDocument.Text)
+		writeResponse(writer, lsp.PublishDiagnosticsNotification{
+			Notification: lsp.Notification{
+				RPC:    "2.0",
+				Method: "textDocument/publishDiagnostics",
+			},
+			Params: lsp.PublishDiagnosticsParams{
+				URI:         request.Params.TextDocument.URI,
+				Diagnostics: diagnostics,
+			},
+		})
 	case "textDocument/didChange":
 		var request lsp.TextDocumentDidChangeNotification
 		if err := json.Unmarshal(contents, &request); err != nil {
@@ -77,7 +87,17 @@ func handleMessage(logger *log.Logger, writer io.Writer, state analysis.State, m
 		for _, change := range request.Params.ContentChanges {
 			// Sync the state of the 'analysis engine' with the state of the editor
 			// (mapping the file to the contents)
-			state.UpdateDocument(request.Params.TextDocument.URI, change.Text)
+			diagnostics := state.UpdateDocument(request.Params.TextDocument.URI, change.Text)
+			writeResponse(writer, lsp.PublishDiagnosticsNotification{
+				Notification: lsp.Notification{
+					RPC:    "2.0",
+					Method: "textDocument/publishDiagnostics",
+				},
+				Params: lsp.PublishDiagnosticsParams{
+					URI:         request.Params.TextDocument.URI,
+					Diagnostics: diagnostics,
+				},
+			})
 		}
 	case "textDocument/hover":
 		var request lsp.HoverRequest
